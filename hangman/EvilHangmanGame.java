@@ -37,6 +37,8 @@ public class EvilHangmanGame implements IEvilHangmanGame {
     {
         boolean guessAlreadyMade = false;
 
+        guess = guess.toLowerCase();
+
         Iterator<String> it = this.getLettersGuessed().iterator();
         while(it.hasNext())
         {
@@ -106,6 +108,9 @@ public class EvilHangmanGame implements IEvilHangmanGame {
 
         //the guess is a character that is a valid guess(lowercase character) that hasn't been guessed yet
 
+
+        //log the letter in the lettersGuessed data member
+        this.lettersGuessed.add(Character.toString(guess));
 
         //set to return
         Set<String> setOfNewPossibleWords = new HashSet<>();
@@ -253,6 +258,28 @@ public class EvilHangmanGame implements IEvilHangmanGame {
 
         }
         return numInstances;
+    }
+
+    public String getLettersGuessedString()
+    {
+        StringBuilder lettersGuessed = new StringBuilder();
+
+        for(String s : this.lettersGuessed)
+        {
+            lettersGuessed.append(s + " ");
+        }
+
+        return lettersGuessed.toString();
+    }
+
+    public int getNumGuessesTotal()
+    {
+        return numGuessesTotal;
+    }
+
+    public void decrementNumGuessesTotal()
+    {
+        this.numGuessesTotal--;
     }
 
     //data memebers

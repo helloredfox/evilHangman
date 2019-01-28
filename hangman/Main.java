@@ -10,16 +10,24 @@ public class Main {
     {
         // get a guess from the user
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Guess a letter: ");
+        String lettersGuessed = game.getLettersGuessedString();
+        System.out.println("You have " + game.getNumGuessesTotal() + " guesses left");
+        System.out.println("Used Letters: " + lettersGuessed);
+        //show all the guess letters
+
+        System.out.println("Word: ");
+
+        System.out.println("Enter guess: ");
         String letterGuessed = scanner.nextLine();
 
         while(!(letterGuessed.matches("[a-zA-Z]{1}")))
         {
             // if the letter guessed isn't 1 upper or lowercase letter, prompt again
-
+            letterGuessed = letterGuessed.toLowerCase();
             //if it is a guess that has already been made
             if(game.checkGuess(letterGuessed))
             {
+                //THIS IS NOT PRINTING
                 System.out.println("You already used that letter");
             }
             else
@@ -27,12 +35,19 @@ public class Main {
                 System.out.println("Invalid input");
             }
             scanner = new Scanner(System.in);
-            System.out.println("Guess a letter: ");
+            System.out.println("You have " + game.getNumGuessesTotal() + " guesses left");
+            System.out.println("Used Letters: " + lettersGuessed);
+            //show all the guess letters
+
+            System.out.println("Word: ");
+
+            System.out.println("Enter guess: ");
             letterGuessed = scanner.nextLine();
         }
 
         //here we do the logic
         //convert the single letter string guess into  a char
+        letterGuessed = letterGuessed.toLowerCase();
         char letterGuess = letterGuessed.charAt(0);
 
         return letterGuess;
@@ -47,16 +62,24 @@ public class Main {
 
         EvilHangmanGame game = new EvilHangmanGame(filepath, wordLength, guesses);
 
-        char guess = getValidNewGuess(game);
+        while(game.getNumGuessesTotal() > 0)
+        {
+            char guess = getValidNewGuess(game);
 
-        try
-        {
-            game.makeGuess(guess);
+            try
+            {
+                game.makeGuess(guess);
+
+            }
+            catch(IEvilHangmanGame.GuessAlreadyMadeException e)
+            {
+                e.printStackTrace();
+            }
+
         }
-        catch(IEvilHangmanGame.GuessAlreadyMadeException e)
-        {
-            e.printStackTrace();
-        }
+
+
+
 
 
 

@@ -1,6 +1,6 @@
 package hangman;
 
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
@@ -20,7 +20,9 @@ public class Main {
         System.out.println("Enter guess: ");
         String letterGuessed = scanner.nextLine();
 
-        while(!(letterGuessed.matches("[a-zA-Z]{1}")))
+        boolean check = game.checkGuess(letterGuessed);
+
+        while(!(letterGuessed.matches("[a-zA-Z]{1}")) || game.checkGuess(letterGuessed))
         {
             // if the letter guessed isn't 1 upper or lowercase letter, prompt again
             letterGuessed = letterGuessed.toLowerCase();
@@ -34,6 +36,8 @@ public class Main {
             {
                 System.out.println("Invalid input");
             }
+
+
             scanner = new Scanner(System.in);
             System.out.println("You have " + game.getNumGuessesTotal() + " guesses left");
             System.out.println("Used Letters: " + lettersGuessed);
@@ -62,21 +66,36 @@ public class Main {
 
         EvilHangmanGame game = new EvilHangmanGame(filepath, wordLength, guesses);
 
-        while(game.getNumGuessesTotal() > 0)
-        {
-            char guess = getValidNewGuess(game);
+        ArrayList<String> patterns = new ArrayList<>();
 
-            try
-            {
-                game.makeGuess(guess);
+        patterns.add("e--e");
+        patterns.add("-e-e");
+        patterns.add("--ee");
+        patterns.add("ee--");
+        patterns.add("-ee-");
 
-            }
-            catch(IEvilHangmanGame.GuessAlreadyMadeException e)
-            {
-                e.printStackTrace();
-            }
 
-        }
+
+
+       String rightMostPattern =  game.findRightMostPattern(patterns);
+
+        System.out.println("This is the right most pattern: " + rightMostPattern);
+
+//        while(game.getNumGuessesTotal() > 0)
+//        {
+//            char guess = getValidNewGuess(game);
+//
+//            try
+//            {
+//              Set<String> newWords =  game.makeGuess(guess);
+//
+//            }
+//            catch(IEvilHangmanGame.GuessAlreadyMadeException e)
+//            {
+//                e.printStackTrace();
+//            }
+//
+//        }
 
 
 

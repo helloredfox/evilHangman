@@ -1,12 +1,7 @@
 package hangman;
 
 import java.io.File;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.Scanner;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.HashMap;
+import java.util.*;
 
 public class EvilHangmanGame implements IEvilHangmanGame {
 
@@ -23,6 +18,7 @@ public class EvilHangmanGame implements IEvilHangmanGame {
         File file  = new File(dictionaryFilePath);
         this.numGuessesTotal = guesses;
         startGame(file, wordLength);
+        this.wordLength = wordLength;
 
     }
 
@@ -39,15 +35,13 @@ public class EvilHangmanGame implements IEvilHangmanGame {
 
         guess = guess.toLowerCase();
 
-        Iterator<String> it = this.getLettersGuessed().iterator();
-        while(it.hasNext())
+        for(String w : this.lettersGuessed)
         {
-            if(guess == it.next())
+            if(guess.equals(w))
             {
-                //the guess has already been made
                 guessAlreadyMade = true;
-                break;
             }
+
         }
         return guessAlreadyMade;
     }
@@ -111,6 +105,8 @@ public class EvilHangmanGame implements IEvilHangmanGame {
 
         //log the letter in the lettersGuessed data member
         this.lettersGuessed.add(Character.toString(guess));
+
+        this.decrementNumGuessesTotal();
 
         //set to return
         Set<String> setOfNewPossibleWords = new HashSet<>();
@@ -185,17 +181,17 @@ public class EvilHangmanGame implements IEvilHangmanGame {
             //check the next condition
             //check number of instances of the guess in each possible key
 
-            int largestNumInstances = 0;
-            String largestInstancePattern = "";
+            int smallestNumInstances = 1000000;
+            String smallestInstancePattern = "";
 
             for(String s : largestSetKeys)
             {
                 int currentNumInstances = getNumInstances(s, guess);
 
-                if(currentNumInstances > largestNumInstances)
+                if(currentNumInstances < smallestNumInstances)
                 {
-                    largestNumInstances = currentNumInstances;
-                    largestInstancePattern = s;
+                    smallestNumInstances = currentNumInstances;
+                    smallestInstancePattern = s;
                 }
             }
 
@@ -207,7 +203,7 @@ public class EvilHangmanGame implements IEvilHangmanGame {
             {
                 int currentNumInstances = getNumInstances(s, guess);
 
-                if(currentNumInstances == largestNumInstances)
+                if(currentNumInstances == smallestNumInstances)
                 {
                     wordsWithSameNumInstances.add(s);
                 }
@@ -218,15 +214,24 @@ public class EvilHangmanGame implements IEvilHangmanGame {
             if(wordsWithSameNumInstances.size() > 1)
             {
                 //check for right-most guess
+                List<String> patternList = new ArrayList<>(wordsWithSameNumInstances);
 
+                //pass the patternList to the function that solves it
 
 
             }
             else
             {
-                setOfNewPossibleWords = patternMap.get(largestInstancePattern);
+                setOfNewPossibleWords = patternMap.get(smallestInstancePattern);
             }
 
+        }
+        else if(largestSetKeys.size() == 0)
+        {
+            //use the entry with all dashes
+
+
+            setOfNewPossibleWords = patternMap.get(entryWithAllDashes());
         }
         else
         {
@@ -282,12 +287,71 @@ public class EvilHangmanGame implements IEvilHangmanGame {
         this.numGuessesTotal--;
     }
 
+    public String entryWithAllDashes()
+    {
+        StringBuilder entry = new StringBuilder();
+        for(int i = 0; i < this.wordLength; i++)
+        {
+            entry.append("-");
+        }
+        return entry.toString();
+    }
+
+
+    public static String findRightMostPattern(ArrayList<String> patterns)
+    {
+        String rightMostPattern = "";
+
+        if(patterns.size() > 1)
+        {
+
+            int patternLength = patterns.get(0).length();
+
+            for(int i = 0; i < patternLength; i++)
+            {
+                //compare the first two strings
+                if(patterns.get(0).charAt(i) == patterns.get(1).charAt(i))
+                {
+                 // if the characters in the pattern are equal, move on to the next
+                }
+                else if(patterns.get(0).charAt(i) == '-' && patterns.get(1).charAt(i) != '-')
+                {
+                    rightMostPattern = patterns.get(0);
+                    //remove the other pattern
+                    patterns.remove(1);
+                    break;
+                }
+                else if(patterns.get(1).charAt(i) == '-' && patterns.get(0).charAt(i) != '-')
+                {
+                    rightMostPattern = patterns.get(1);
+                    patterns.remove(0);
+                    break;
+                }
+            }
+
+            if(patterns.size() > 1)
+            {
+                rightMostPattern = findRightMostPattern(patterns);
+                return rightMostPattern;
+            }
+            else if(patterns.size() == 1)
+            {
+                return rightMostPattern;
+            }
+        }
+
+
+
+
+        return rightMostPattern;
+
+    }
     //data memebers
     private Set <String> dictionary = new HashSet<String>();
     private int numGuessesTotal = 0;
     private int numGuessesMade = 0;
     private Set <String> lettersGuessed = new HashSet<String>();
-
+    private int wordLength = 0;
 
 
 

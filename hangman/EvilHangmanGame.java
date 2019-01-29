@@ -19,6 +19,7 @@ public class EvilHangmanGame implements IEvilHangmanGame {
         this.numGuessesTotal = guesses;
         startGame(file, wordLength);
         this.wordLength = wordLength;
+        this.currentlyGuessedWordRepresentation = entryWithAllDashes();
 
     }
 
@@ -107,6 +108,8 @@ public class EvilHangmanGame implements IEvilHangmanGame {
         this.lettersGuessed.add(Character.toString(guess));
 
         this.decrementNumGuessesTotal();
+
+        String finalPattern = "";
 
         //set to return
         Set<String> setOfNewPossibleWords = new HashSet<>();
@@ -214,15 +217,19 @@ public class EvilHangmanGame implements IEvilHangmanGame {
             if(wordsWithSameNumInstances.size() > 1)
             {
                 //check for right-most guess
-                List<String> patternList = new ArrayList<>(wordsWithSameNumInstances);
+                ArrayList<String> patternList = new ArrayList<>(wordsWithSameNumInstances);
 
                 //pass the patternList to the function that solves it
+                String rightMostGuess = findRightMostPattern(patternList);
 
+                setOfNewPossibleWords = patternMap.get(rightMostGuess);
+                finalPattern = rightMostGuess;
 
             }
             else
             {
                 setOfNewPossibleWords = patternMap.get(smallestInstancePattern);
+                finalPattern = smallestInstancePattern;
             }
 
         }
@@ -232,17 +239,21 @@ public class EvilHangmanGame implements IEvilHangmanGame {
 
 
             setOfNewPossibleWords = patternMap.get(entryWithAllDashes());
+            finalPattern = entryWithAllDashes();
         }
         else
         {
             //use the largest set
             setOfNewPossibleWords = patternMap.get(largestSetSizeKey);
+            finalPattern = largestSetSizeKey;
 
         }
 
+        //need to update the word shown to the player and maybe update the message shown
+
+        updateCurrentWordGuesses(finalPattern);
         return setOfNewPossibleWords;
     }
-
 
     public Set <String> getLettersGuessed()
     {
@@ -340,11 +351,38 @@ public class EvilHangmanGame implements IEvilHangmanGame {
             }
         }
 
-
-
-
         return rightMostPattern;
 
+    }
+
+    public void updateCurrentWordGuesses(String pattern)
+    {
+        StringBuilder newRepresentation = new StringBuilder();
+
+        for (int i = 0; i < pattern.length(); i++)
+        {
+            if (this.currentlyGuessedWordRepresentation.charAt(i) == '-' && pattern.charAt(i) != '-') {
+                newRepresentation.append(pattern.charAt(i));
+            }
+            else if (this.currentlyGuessedWordRepresentation.charAt(i) != '-' && pattern.charAt(i) == '-')
+            {
+                newRepresentation.append(this.currentlyGuessedWordRepresentation.charAt(i));
+            }
+            else
+            {
+                newRepresentation.append('-');
+            }
+        }
+        this.currentlyGuessedWordRepresentation = newRepresentation.toString();
+    }
+
+    public String getCurrentlyGuessedWordRepresentation()
+    {
+        return this.currentlyGuessedWordRepresentation;
+    }
+    public void setNewWordsAsDictionary(Set<String> newWords)
+    {
+        this.dictionary = newWords;
     }
     //data memebers
     private Set <String> dictionary = new HashSet<String>();
@@ -352,7 +390,7 @@ public class EvilHangmanGame implements IEvilHangmanGame {
     private int numGuessesMade = 0;
     private Set <String> lettersGuessed = new HashSet<String>();
     private int wordLength = 0;
-
+    private String currentlyGuessedWordRepresentation = "";
 
 
 

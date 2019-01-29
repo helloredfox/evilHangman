@@ -2,7 +2,7 @@ package hangman;
 
 import java.util.ArrayList;
 import java.util.Scanner;
-
+import java.util.Set;
 public class Main {
 
 
@@ -15,7 +15,7 @@ public class Main {
         System.out.println("Used Letters: " + lettersGuessed);
         //show all the guess letters
 
-        System.out.println("Word: ");
+        System.out.println("Word: " + game.getCurrentlyGuessedWordRepresentation());
 
         System.out.println("Enter guess: ");
         String letterGuessed = scanner.nextLine();
@@ -66,36 +66,39 @@ public class Main {
 
         EvilHangmanGame game = new EvilHangmanGame(filepath, wordLength, guesses);
 
-        ArrayList<String> patterns = new ArrayList<>();
 
-        patterns.add("e--e");
-        patterns.add("-e-e");
-        patterns.add("--ee");
-        patterns.add("ee--");
-        patterns.add("-ee-");
+        /*
+        Code to test the findRightMostPatter() method
 
-
-
-
-       String rightMostPattern =  game.findRightMostPattern(patterns);
-
-        System.out.println("This is the right most pattern: " + rightMostPattern);
-
-//        while(game.getNumGuessesTotal() > 0)
-//        {
-//            char guess = getValidNewGuess(game);
+         */
+//        ArrayList<String> patterns = new ArrayList<>();
 //
-//            try
-//            {
-//              Set<String> newWords =  game.makeGuess(guess);
+//        patterns.add("e--e---e");
+//        patterns.add("e----e-e");
+//        patterns.add("---e--ee");
+//        patterns.add("ee----e-");
+//        patterns.add("---e-ee-");
 //
-//            }
-//            catch(IEvilHangmanGame.GuessAlreadyMadeException e)
-//            {
-//                e.printStackTrace();
-//            }
+//       String rightMostPattern =  game.findRightMostPattern(patterns);
 //
-//        }
+//        System.out.println("This is the right most pattern: \"" + rightMostPattern + "\"");
+
+        while(game.getNumGuessesTotal() > 0)
+        {
+            char guess = getValidNewGuess(game);
+
+            try
+            {
+              Set<String> newWords =  game.makeGuess(guess);
+              game.setNewWordsAsDictionary(newWords);
+
+            }
+            catch(IEvilHangmanGame.GuessAlreadyMadeException e)
+            {
+                e.printStackTrace();
+            }
+
+        }
 
 
 

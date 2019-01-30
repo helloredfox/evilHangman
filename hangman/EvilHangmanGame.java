@@ -11,13 +11,14 @@ public class EvilHangmanGame implements IEvilHangmanGame {
     }
 
 
+    EvilHangmanGame()
+    {
+
+    }
 
     EvilHangmanGame(String dictionaryFilePath, int wordLength, int guesses)
     {
-        //run start game
-        File file  = new File(dictionaryFilePath);
         this.numGuessesTotal = guesses;
-        startGame(file, wordLength);
         this.wordLength = wordLength;
         this.currentlyGuessedWordRepresentation = entryWithAllDashes();
 

@@ -1,5 +1,6 @@
 package hangman;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.Set;
@@ -72,6 +73,9 @@ public class Main {
 
         EvilHangmanGame game = new EvilHangmanGame(filepath, wordLength, guesses);
 
+        File file  = new File(filepath);
+
+        game.startGame(file, wordLength);
 
         /*
         Code to test the findRightMostPatter() method

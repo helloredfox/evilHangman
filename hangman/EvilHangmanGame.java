@@ -107,7 +107,6 @@ public class EvilHangmanGame implements IEvilHangmanGame {
         //log the letter in the lettersGuessed data member
         this.lettersGuessed.add(Character.toString(guess));
 
-        this.decrementNumGuessesTotal();
 
         String finalPattern = "";
 
@@ -139,8 +138,6 @@ public class EvilHangmanGame implements IEvilHangmanGame {
                 }
 
                 //now we have a map with the patterns and stuff. Choose the "best" one
-
-         System.out.println(patternMap.keySet());
 
                 int largestSetSize = 0;
                 String largestSetSizeKey = "";
@@ -251,7 +248,12 @@ public class EvilHangmanGame implements IEvilHangmanGame {
 
         //need to update the word shown to the player and maybe update the message shown
 
-        updateCurrentWordGuesses(finalPattern);
+       boolean lettersAdded = updateCurrentWordGuesses(finalPattern);
+        if(!lettersAdded)
+        {
+            System.out.println("Sorry, there are no " + guess + "'s");
+            this.decrementNumGuessesTotal();
+        }
         return setOfNewPossibleWords;
     }
 
@@ -355,14 +357,19 @@ public class EvilHangmanGame implements IEvilHangmanGame {
 
     }
 
-    public void updateCurrentWordGuesses(String pattern)
+
+    //returns false if no letters were added to the word being guessed. returns true if letters were added
+    public boolean updateCurrentWordGuesses(String pattern)
     {
         StringBuilder newRepresentation = new StringBuilder();
+        boolean lettersAdded = false;
 
+        String previousGuessedWordRepresentation = this.currentlyGuessedWordRepresentation;
         for (int i = 0; i < pattern.length(); i++)
         {
             if (this.currentlyGuessedWordRepresentation.charAt(i) == '-' && pattern.charAt(i) != '-') {
                 newRepresentation.append(pattern.charAt(i));
+                lettersAdded = true;
             }
             else if (this.currentlyGuessedWordRepresentation.charAt(i) != '-' && pattern.charAt(i) == '-')
             {
@@ -374,6 +381,8 @@ public class EvilHangmanGame implements IEvilHangmanGame {
             }
         }
         this.currentlyGuessedWordRepresentation = newRepresentation.toString();
+        return lettersAdded;
+
     }
 
     public String getCurrentlyGuessedWordRepresentation()
@@ -384,11 +393,27 @@ public class EvilHangmanGame implements IEvilHangmanGame {
     {
         this.dictionary = newWords;
     }
+
+    public String getRandomWord()
+    {
+        int size = this.dictionary.size();
+        int item = new Random().nextInt(size); // In real life, the Random object should be rather more shared than this
+        int i = 0;
+        for(String s : this.dictionary)
+        {
+            if (i == item)
+                return s;
+            i++;
+        }
+        return "";
+
+    }
+
     //data memebers
     private Set <String> dictionary = new HashSet<String>();
     private int numGuessesTotal = 0;
     private int numGuessesMade = 0;
-    private Set <String> lettersGuessed = new HashSet<String>();
+    private Set <String> lettersGuessed = new TreeSet<>();
     private int wordLength = 0;
     private String currentlyGuessedWordRepresentation = "";
 

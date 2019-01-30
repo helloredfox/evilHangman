@@ -9,9 +9,15 @@ public class Main {
     public static char getValidNewGuess(EvilHangmanGame game)
     {
         // get a guess from the user
+
+        String guessOrGuesses = "guesses";
+        if(game.getNumGuessesTotal() == 1)
+        {
+            guessOrGuesses = "guess";
+        }
         Scanner scanner = new Scanner(System.in);
         String lettersGuessed = game.getLettersGuessedString();
-        System.out.println("You have " + game.getNumGuessesTotal() + " guesses left");
+        System.out.println("You have " + game.getNumGuessesTotal() + " " + guessOrGuesses + " left");
         System.out.println("Used Letters: " + lettersGuessed);
         //show all the guess letters
 
@@ -39,11 +45,11 @@ public class Main {
 
 
             scanner = new Scanner(System.in);
-            System.out.println("You have " + game.getNumGuessesTotal() + " guesses left");
+            System.out.println("You have " + game.getNumGuessesTotal() + " " + guessOrGuesses +" left");
             System.out.println("Used Letters: " + lettersGuessed);
             //show all the guess letters
 
-            System.out.println("Word: ");
+            System.out.println("Word: " + game.getCurrentlyGuessedWordRepresentation());
 
             System.out.println("Enter guess: ");
             letterGuessed = scanner.nextLine();
@@ -85,12 +91,30 @@ public class Main {
 
         while(game.getNumGuessesTotal() > 0)
         {
+
+            boolean foundDash = false;
+            //before you make a new guess, make sure the word isn't completely guessed
+            for(int i = 0; i < game.getCurrentlyGuessedWordRepresentation().length(); i++)
+            {
+                if(game.getCurrentlyGuessedWordRepresentation().charAt(i) == '-')
+                {
+                    foundDash = true;
+                }
+            }
+
+            if(!foundDash)
+            {
+                System.out.println("You win! The word was: " + game.getCurrentlyGuessedWordRepresentation());
+                break;
+            }
+
             char guess = getValidNewGuess(game);
 
             try
             {
-              Set<String> newWords =  game.makeGuess(guess);
-              game.setNewWordsAsDictionary(newWords);
+                    Set<String> newWords =  game.makeGuess(guess);
+                    game.setNewWordsAsDictionary(newWords);
+
 
             }
             catch(IEvilHangmanGame.GuessAlreadyMadeException e)
@@ -100,6 +124,12 @@ public class Main {
 
         }
 
+
+        if(game.getNumGuessesTotal() == 0)
+        {
+            System.out.println("You lose!");
+            System.out.println("The word was: " + game.getRandomWord());
+        }
 
 
 

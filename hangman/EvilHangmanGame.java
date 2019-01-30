@@ -11,12 +11,12 @@ public class EvilHangmanGame implements IEvilHangmanGame {
     }
 
 
-    EvilHangmanGame()
+    public EvilHangmanGame()
     {
 
     }
 
-    EvilHangmanGame(String dictionaryFilePath, int wordLength, int guesses)
+    public EvilHangmanGame(String dictionaryFilePath, int wordLength, int guesses)
     {
         this.numGuessesTotal = guesses;
         this.wordLength = wordLength;

@@ -117,6 +117,12 @@ public class Main {
             try
             {
                     Set<String> newWords =  game.makeGuess(guess);
+                boolean lettersAdded = game.updateCurrentWordGuesses(game.getMostRecentPattern());
+                if(!lettersAdded)
+                {
+                    System.out.println("Sorry, there are no " + guess + "'s");
+                    game.decrementNumGuessesTotal();
+                }
                     game.setNewWordsAsDictionary(newWords);
 
 

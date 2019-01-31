@@ -68,6 +68,11 @@ public class EvilHangmanGame implements IEvilHangmanGame {
         //store the words in a set, but only the words of the given word length
         try
         {
+            //set the guessedWord to the right number of blanks
+            this.currentlyGuessedWordRepresentation = entryWithAllDashes();
+            this.wordLength = wordLength;
+
+
             Scanner scanner = new Scanner(dictionary);
             while(scanner.hasNext())
             {
@@ -249,12 +254,8 @@ public class EvilHangmanGame implements IEvilHangmanGame {
 
         //need to update the word shown to the player and maybe update the message shown
 
-       boolean lettersAdded = updateCurrentWordGuesses(finalPattern);
-        if(!lettersAdded)
-        {
-            System.out.println("Sorry, there are no " + guess + "'s");
-            this.decrementNumGuessesTotal();
-        }
+        this.mostRecentPattern = finalPattern;
+
         return setOfNewPossibleWords;
     }
 
@@ -365,9 +366,9 @@ public class EvilHangmanGame implements IEvilHangmanGame {
         StringBuilder newRepresentation = new StringBuilder();
         boolean lettersAdded = false;
 
-        String previousGuessedWordRepresentation = this.currentlyGuessedWordRepresentation;
         for (int i = 0; i < pattern.length(); i++)
         {
+
             if (this.currentlyGuessedWordRepresentation.charAt(i) == '-' && pattern.charAt(i) != '-') {
                 newRepresentation.append(pattern.charAt(i));
                 lettersAdded = true;
@@ -410,14 +411,17 @@ public class EvilHangmanGame implements IEvilHangmanGame {
 
     }
 
+    public String getMostRecentPattern()
+    {
+        return this.mostRecentPattern;
+    }
     //data memebers
     private Set <String> dictionary = new HashSet<String>();
     private int numGuessesTotal = 0;
-    private int numGuessesMade = 0;
     private Set <String> lettersGuessed = new TreeSet<>();
     private int wordLength = 0;
     private String currentlyGuessedWordRepresentation = "";
-
+    private String mostRecentPattern = "";
 
 
 }

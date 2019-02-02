@@ -255,7 +255,7 @@ public class EvilHangmanGame implements IEvilHangmanGame {
         //need to update the word shown to the player and maybe update the message shown
 
         this.mostRecentPattern = finalPattern;
-
+        this.dictionary = setOfNewPossibleWords;
         return setOfNewPossibleWords;
     }
 
